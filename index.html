@@ -2,285 +2,37 @@
 <head>
 	<meta charset = 'utf-8'/>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
-    <script src = 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.js'></script>
-    <link href = 'https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.css' rel = 'stylesheet'/>
 	<script src = "https://d3js.org/d3.v3.min.js"></script>
-	<script src = "https://d3js.org/topojson.v1.min.js"></script>
 	<script src = "http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-	<script src = 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js'></script>
 	<script src = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
 	<link href = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel = 'stylesheet'/>
+	<link rel = 'stylesheet' type="text/css" href="css/styles.css" />
+	
 
 	<title>Haze in China</title>
-	<style>
-		body { font-family: "Futura"; background-color: #eee; margin : 0; padding : 0;}
-		/*svg { border: solid black 1px; }*/
-		.axis path { fill: none; stroke: black; stroke-width : 1; }
-		.axis line { stroke: black; }
-		.div { text-align: center; }
-		path {
-		    stroke-width: 3;
-		    fill: none;
-		}
-		.span {
-			color: purple;
-			font-size: 25px;
-		}
-		#map { 
-            position : absolute; 
-            top : 60; 
-            bottom : 0; 
-            width : 100%;
-            height : 70%;
-        }
-	</style>
 </head>
 <body>
-<h2 class = "div">China Air Quality Map</h2>
-<div id = "map"></div>
-<div id = "blank"></div>
-<div class = "div">
-	<span id = "cityName" class = "span">Click a Circle on the Map</span>
-</div>
-<div id = "rectPlot" class = "div"></div>
-<h2 class = "div">Is Chinese Data Similar to US Data for Year 2015?</h2>
-<div id = "menu" class = "div"></div>
-<div id = "comparison" class = "div"></div>
-<script>
-L.mapbox.accessToken = 'pk.eyJ1IjoiY2hlbnhpMTAyMSIsImEiOiJjaW81czVsb3UwMjAxdzNrandidHF3eTl3In0.KscIyN8_aLsmYzW3LSHLfA';
-var map = L.mapbox.map('map', 'mapbox.streets')
-  .setView([34, 116], 4);
+	<!-- first visualization -->
+	<div id="firstViz">
+		<h2 class = "center">China Air Quality Map</h2>
+		<div id = "map"></div>
+		<div id = "blank"></div>
 
-var svg = d3.select("#blank").append("svg").attr("height", 500).attr("width", width);
+		<div class = "center">
+			<span id = "cityName" class = "span">Click a Circle on the Map</span>
+		</div>
 
-var height = 500;
-var width = 900;
-var padding = 50;
+		<div id = "rectPlot" class = "center"></div>
 
-var months, AQI, cities;
-var monthInfo, AQIInfo, cityInfo;
+	</div>
 
-var xScale;
-var yScale;
-
-var ChinaData = new Array();
-var USData = new Array();
-
-var color = ["#dd3497", "#6a51a3"];
-
-var pollution = ["green", "yellow", "orange", "red", "purple"]
-
-var fiveCities = ["Beijing", "Chengdu", "Guangzhou", "Shanghai", "Shenyang"];
-
-var svgRect = d3.select("#rectPlot");
-
-var choice; // The city that is choosen on the map
-
-d3.csv("cities.csv", function (error, data) {
-	cityInfo = data;
-	cities = cityInfo.map(function (info) {
-		return {
-			site: info["City"],
-			year: Number(info["Year"]),
-			AQI: Number(info["AQI"]),
-			day: Number(info["Day"]),
-			quality: Number(info["Quality Number"])
-		};
-	})
-
-});
-
-d3.csv("map.csv", function (error, data) {
-	AQIInfo = data;
-	AQI = AQIInfo.map(function (info) {
-		return {
-			site: info["City"],
-			year: Number(info["Year"]),
-			AQI: Number(info["AQI"]),
-			x: Number(info["x"]),
-			y: Number(info["y"]),
-			quality: Number(info["Quality Number"])
-		};
-	})
-
-	AQI.forEach(function (d) {
-  		d.LatLng = new L.LatLng(d.x, d.y);
-	});
-	AQI.forEach(function (d) {
- 		map.addLayer(L.circle([d.x, d.y], 8000));
- 	});
-
- 	var svgMap = d3.select(map.getPanes().overlayPane).append("svg")
-	.attr("class", "leaflet-zoom-animated")
-	.attr("width", window.innerWidth)
-	.attr("height", window.innerHeight);
-
-	var	g = svgMap.append("g").attr("class", "leaflet-zoom-hide");
-
-	var circles = g.selectAll("circle")
-	.data(AQI)
-	.enter().append("circle")
-	.attr("id", function (d) {
-		return d.site;
-	})
-	.style("fill", function (d) {
-		return pollution[d.quality];
-	})
-	.style("opacity", 0.9)
-	.on("click", function () {
-		console.log(this.id);
-		var name = this.id;
-		d3.select("#cityName").text(name);
-		choice = cities.filter(function (d) {
-			return d.site == name;
-		});
-		svgRect.select("svg").remove();
-		svgRect.append("svg").attr("width", width).attr("height", height);
-		
-		svgRect.selectAll("rect").data(choice).enter()
-		.append("rect").attr("width", 30).attr("height", 30)
-		.attr("x", function (d) {
-			return ((d.day - 1) % 30) * 30;
-		})
-		.attr("y", function (d) {
-			return (Math.floor((d.day - 1) / 30) + 1) * 30;
-		})
-		.style("fill", function (d) {
-			return pollution[d.quality];
-		});
-		// svgRect.append("rect").attr("width", 30).attr("height", 30).attr("x", 100).attr("y", 100)
-		// .style("fill", "red");
-	});
-
-	function translateSVG() {
-		var viewBoxLeft = document.querySelector("svg.leaflet-zoom-animated").viewBox.animVal.x;
-		var viewBoxTop = document.querySelector("svg.leaflet-zoom-animated").viewBox.animVal.y;
-		// Reszing width and height incase of window resize
-		svgMap.attr("width", window.innerWidth);
-		svgMap.attr("height", window.innerHeight);
-		// Adding the ViewBox attribute to our SVG to contain it
-		svgMap.attr("viewBox", function () {
-		    return "" + viewBoxLeft + " " + viewBoxTop + " "  + window.innerWidth + " " + window.innerHeight;
-		});
-		// Adding the style attribute to our SVG to transkate it
-		svgMap.attr("style", function () {
-		    return "transform: translate3d(" + viewBoxLeft + "px, " + viewBoxTop + "px, 0px);";
-		});
-	}
-
-	function update() {
-		translateSVG();
-		circles.attr("cx", function (d) { return map.latLngToLayerPoint(d.LatLng).x; })
-		circles.attr("cy", function (d) { return map.latLngToLayerPoint(d.LatLng).y; })
-		circles.attr("r", function (d) { return 0.2 * Math.pow(2, map.getZoom()); });	
-	}
-	
-	update();
-	map.on("moveend", update);
-});
-
-d3.select("#menu")
-.append("select")
-.attr("id", "selectCity")
-.selectAll("option")
-.data(fiveCities)
-.enter()
-.append("option")
-.text(function (d) { return d; });
-
-svg = d3.select("#comparison").append("svg").attr("height", height).attr("width", width);
-
-d3.csv("comparison.csv", function (error, data) {
-	monthInfo = data;
-	months = monthInfo.map(function (info) {
-		return {
-			site: info["City"],
-			year: Number(info["Year"]),
-			month: Number(info["Month"]),
-			from: info["Source"],
-			quality: Number(info["PM2.5"])
-		};
-	})
-
-	for (var i = 0; i < fiveCities.length; i++) {
-		ChinaData[i] = months.filter(function (d) { return d.site == fiveCities[i] && d.from == "China"; });
-		USData[i] = months.filter(function (d) { return d.site == fiveCities[i] && d.from == "US"; });
-	}
-
-	xScale = d3.scale.linear().domain([1, 12]).range([padding, width - padding]);
-	yScale = d3.scale.linear().domain([0, d3.max(months, function (d) { return d.quality; })]).range([height - padding, padding]);
-
-	var xAxis = d3.svg.axis().scale(xScale).ticks(12);
-	svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height - padding) + ")").call(xAxis);
-
-	var yAxis = d3.svg.axis().scale(yScale).orient("left");
-	svg.append("g").attr("class", "axis").attr("transform", "translate(" + padding + ", 0)").call(yAxis);
-
-	svg.append("text")
-    .style("text-anchor", "middle")
-    .attr("transform", "translate(" + (width / 2) + ", " + (height - (padding / 4)) + ")")
-    .text("Month");
-
-    svg.append("text")
-    .style("text-anchor", "middle")
-    .attr("transform", "translate(" + (padding / 4) + ", " + (height / 2) + ") rotate(-90)")
-    .text("PM2.5 Value");
-
-    drawLine(ChinaData[0], 0);
-    drawLine(USData[0], 1);
-    drawLegend();
-});
-
-d3.select("#selectCity").on("change", function () {
-	var key = this.selectedIndex;
-	d3.select("#comparison").selectAll("path").remove();
-
-	var xAxis = d3.svg.axis().scale(xScale).ticks(12);
-	svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height - padding) + ")").call(xAxis);
-
-	var yAxis = d3.svg.axis().scale(yScale).orient("left");
-	svg.append("g").attr("class", "axis").attr("transform", "translate(" + padding + ", 0)").call(yAxis);
-
-	drawLine(ChinaData[key], 0);
-	drawLine(USData[key], 1);
-	drawLegend();
-});
-
-var drawLine = function (data, i) {
-	var line = d3.svg.line()
-	.x(function (d) { return xScale(d.month); })
-	.y(function (d) { return yScale(d.quality); });
-	var path = svg.append("path").attr("class", "line").attr("d", line(data)).style("stroke", color[i]);
-	var totalLength = path.node().getTotalLength();
-	// Animation
-	path
-    .attr("stroke-dasharray", totalLength + " " + totalLength)
-    .attr("stroke-dashoffset", totalLength)
-    .transition()
-    .duration(800)
-    .ease("linear")
-    .attr("stroke-dashoffset", 0);
-}
-
-var drawLegend = function () {
-	svg.append("rect")
-    .attr("x", 100).attr("y", 50).attr("width", 150).attr("height", 70)
-    .style("stroke", "black").style("fill", "#eee").style("stroke-width", 1.5);
-
-    svg.append("path")
-    .attr("d", "M 120, 70 L 150, 70").style("stroke", color[0]);
-
-    svg.append("path")
-    .attr("d", "M 120, 100 L 150, 100").style("stroke", color[1]);
-
-    svg.append("text")
-    .attr("x", 160).attr("y", 70).text("Chinese Data")
-    .style("font-size", 12).style("dominant-baseline", "middle");
-
-    svg.append("text")
-    .attr("x", 160).attr("y", 100).text("US Data")
-    .style("font-size", 12).style("dominant-baseline", "middle");
-}
-</script>
+	<!-- second visualization -->
+	<div id="secondViz">
+		<h2 class = "center">Is Chinese Data Similar to US Data for Year 2015?</h2>
+		<div id = "menu" class = "center"></div>
+		<div id = "comparison" class = "center"></div>
+	</div>
+	<script src = "javascript/mapAndRectsCreation.js"></script>
+	<script src = "javascript/comparisonCNandUS.js"></script>
 </body>
 </html>

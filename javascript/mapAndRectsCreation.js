@@ -1,4 +1,3 @@
-
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2hlbnhpMTAyMSIsImEiOiJjaW81czVsb3UwMjAxdzNrandidHF3eTl3In0.KscIyN8_aLsmYzW3LSHLfA';
 var map = L.mapbox.map('map', 'mapbox.streets')
   .setView([34, 116], 4);
@@ -20,7 +19,7 @@ var USData = new Array();
 
 var color = ["#dd3497", "#6a51a3"];
 
-var pollution = ["green", "yellow", "orange", "red", "purple"]
+var pollution = ["green", "yellow", "orange", "red"]
 
 var fiveCities = ["Beijing", "Chengdu", "Guangzhou", "Shanghai", "Shenyang"];
 
@@ -101,8 +100,6 @@ d3.csv("data/map.csv", function (error, data) {
 			return pollution[d.quality];
 		})
 		.style("stroke","black");
-		// svgRect.append("rect").attr("width", 30).attr("height", 30).attr("x", 100).attr("y", 100)
-		// .style("fill", "red");
 	});
 
 	function translateSVG() {

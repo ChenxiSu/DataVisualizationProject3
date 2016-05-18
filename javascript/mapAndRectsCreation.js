@@ -28,7 +28,7 @@ var svgRect = d3.select("#rectPlot");
 
 var choice; // The city that is choosen on the map
 
-d3.csv("cities.csv", function (error, data) {
+d3.csv("data/cities.csv", function (error, data) {
 	cityInfo = data;
 	cities = cityInfo.map(function (info) {
 		return {
@@ -42,7 +42,7 @@ d3.csv("cities.csv", function (error, data) {
 
 });
 
-d3.csv("map.csv", function (error, data) {
+d3.csv("data/map.csv", function (error, data) {
 	AQIInfo = data;
 	AQI = AQIInfo.map(function (info) {
 		return {

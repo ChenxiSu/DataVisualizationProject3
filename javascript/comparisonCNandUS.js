@@ -15,7 +15,7 @@ d3.select("#menu")
 
 var svg = d3.select("#comparison").append("svg").attr("height", height).attr("width", width);
 
-d3.csv("comparison.csv", function (error, data) {
+d3.csv("data/comparison.csv", function (error, data) {
 	monthInfo = data;
 	months = monthInfo.map(function (info) {
 		return {

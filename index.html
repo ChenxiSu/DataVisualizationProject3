@@ -22,6 +22,10 @@
 		    stroke-width: 3;
 		    fill: none;
 		}
+		.span {
+			color: purple;
+			font-size: 25px;
+		}
 		#map { 
             position : absolute; 
             top : 60; 
@@ -35,6 +39,9 @@
 <h2 class = "div">China Air Quality Map</h2>
 <div id = "map"></div>
 <div id = "blank"></div>
+<div class = "div">
+	<span id = "cityName" class = "span">Click a Circle on the Map</span>
+</div>
 <div id = "rectPlot" class = "div"></div>
 <h2 class = "div">Is Chinese Data Similar to US Data for Year 2015?</h2>
 <div id = "menu" class = "div"></div>
@@ -67,7 +74,7 @@ var fiveCities = ["Beijing", "Chengdu", "Guangzhou", "Shanghai", "Shenyang"];
 
 var svgRect = d3.select("#rectPlot");
 
-var dailyValueForCity = [];
+var choice; // The city that is choosen on the map
 
 d3.csv("cities.csv", function (error, data) {
 	cityInfo = data;
@@ -123,14 +130,26 @@ d3.csv("map.csv", function (error, data) {
 	.on("click", function () {
 		console.log(this.id);
 		var name = this.id;
-		var choice = cities.filter(function (d) {
+		d3.select("#cityName").text(name);
+		choice = cities.filter(function (d) {
 			return d.site == name;
 		});
+		svgRect.select("svg").remove();
 		svgRect.append("svg").attr("width", width).attr("height", height);
+		
 		svgRect.selectAll("rect").data(choice).enter()
 		.append("rect").attr("width", 30).attr("height", 30)
-		.attr("x", 0)
-		.attr("y", 0);
+		.attr("x", function (d) {
+			return ((d.day - 1) % 30) * 30;
+		})
+		.attr("y", function (d) {
+			return (Math.floor((d.day - 1) / 30) + 1) * 30;
+		})
+		.style("fill", function (d) {
+			return pollution[d.quality];
+		});
+		// svgRect.append("rect").attr("width", 30).attr("height", 30).attr("x", 100).attr("y", 100)
+		// .style("fill", "red");
 	});
 
 	function translateSVG() {

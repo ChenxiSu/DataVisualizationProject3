@@ -68,6 +68,18 @@ d3.csv("data/map.csv", function (error, data) {
 
 	var	g = svgMap.append("g").attr("class", "leaflet-zoom-hide");
 
+	var images = g.selectAll("image")
+	.data(AQI)
+	.enter().append("image")
+	.attr("id", function (d) {
+		return d.site;
+	})
+	.attr("xlink:href", function (d) {
+		var temp = d.quality;
+		return "img/" + temp + ".svg";
+	})
+	.style("opacity", 0.9);
+
 	var circles = g.selectAll("circle")
 	.data(AQI)
 	.enter().append("circle")
@@ -122,7 +134,11 @@ d3.csv("data/map.csv", function (error, data) {
 		translateSVG();
 		circles.attr("cx", function (d) { return map.latLngToLayerPoint(d.LatLng).x; })
 		circles.attr("cy", function (d) { return map.latLngToLayerPoint(d.LatLng).y; })
-		circles.attr("r", function (d) { return 0.2 * Math.pow(2, map.getZoom()); });	
+		circles.attr("r", function (d) { return 0.2 * Math.pow(2, map.getZoom()); })
+		images.attr("x", function (d) { return map.latLngToLayerPoint(d.LatLng).x; })
+		images.attr("y", function (d) { return map.latLngToLayerPoint(d.LatLng).y; })
+		images.attr("height", function (d) { return 0.5 * Math.pow(2, map.getZoom()); })	
+		images.attr("width", function (d) { return 0.5 * Math.pow(2, map.getZoom()); });	
 	}
 	
 	update();

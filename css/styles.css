@@ -3,7 +3,10 @@ body {
     background-color: #eee; 
     margin : 0; 
     padding : 0;
+    width: 100%;
 }
+
+
 /*svg { border: solid black 1px; }*/
 .axis path { fill: none; stroke: black; stroke-width : 1; }
 .axis line { stroke: black; }
@@ -16,10 +19,33 @@ path {
 	color: purple;
 	font-size: 25px;
 }
+#firstViz{
+    width: 100%;
+}
 #map { 
     position : relative; 
-    top : 60px; 
-    margin-bottom: 110px; 
+    top : 5%; 
+    margin-bottom: 1%; 
     width : 100%;
     height : 70%;
+}
+#aqiRange{
+    width: 50%;
+    margin-left: 25%;
+     -webkit-appearance: none;
+    background-color: #012C5F;
+    opacity:.8;
+    height:20px;
+}
+
+
+
+/*style of second visualization*/
+#secondViz{
+    width: 100%;
+    height: 400px;
+}
+#comparison{
+    width: 100%;
+    height: 90%;
 }

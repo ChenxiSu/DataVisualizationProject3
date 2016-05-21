@@ -4,6 +4,11 @@ var monthInfo, AQIInfo, cityInfo;
 var fiveCities = ["Beijing", "Chengdu", "Guangzhou", "Shanghai", "Shenyang"];
 var color = ["#dd3497", "#6a51a3"];
 
+var height2 = d3.select("#comparison")[0][0].offsetHeight;
+var width2 = d3.select("#comparison")[0][0].offsetWidth;
+console.log("height2 is: "+height2);
+console.log("width2 is" +width2);
+
 d3.select("#menu")
 .append("select")
 .attr("id", "selectCity")
@@ -13,7 +18,7 @@ d3.select("#menu")
 .append("option")
 .text(function (d) { return d; });
 
-var svg = d3.select("#comparison").append("svg").attr("height", height).attr("width", width);
+var svg = d3.select("#comparison").append("svg").attr("height", height2).attr("width", width2);
 
 d3.csv("data/comparison.csv", function (error, data) {
 	monthInfo = data;
@@ -32,23 +37,23 @@ d3.csv("data/comparison.csv", function (error, data) {
 		USData[i] = months.filter(function (d) { return d.site == fiveCities[i] && d.from == "US"; });
 	}
 
-	xScale = d3.scale.linear().domain([1, 12]).range([padding, width - padding]);
-	yScale = d3.scale.linear().domain([0, d3.max(months, function (d) { return d.quality; })]).range([height - padding, padding]);
+	xScale = d3.scale.linear().domain([1, 12]).range([padding, width2 - padding]);
+	yScale = d3.scale.linear().domain([0, d3.max(months, function (d) { return d.quality; })]).range([height2 - padding, padding]);
 
 	var xAxis = d3.svg.axis().scale(xScale).ticks(12);
-	svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height - padding) + ")").call(xAxis);
+	svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height2 - padding) + ")").call(xAxis);
 
 	var yAxis = d3.svg.axis().scale(yScale).orient("left");
 	svg.append("g").attr("class", "axis").attr("transform", "translate(" + padding + ", 0)").call(yAxis);
 
 	svg.append("text")
     .style("text-anchor", "middle")
-    .attr("transform", "translate(" + (width / 2) + ", " + (height - (padding / 4)) + ")")
+    .attr("transform", "translate(" + (width2 / 2) + ", " + (height2 - (padding / 4)) + ")")
     .text("Month");
 
     svg.append("text")
     .style("text-anchor", "middle")
-    .attr("transform", "translate(" + (padding / 4) + ", " + (height / 2) + ") rotate(-90)")
+    .attr("transform", "translate(" + (padding / 4) + ", " + (height2 / 2) + ") rotate(-90)")
     .text("PM2.5 Value");
 
     drawLine(ChinaData[0], 0);
@@ -61,7 +66,7 @@ d3.select("#selectCity").on("change", function () {
 	d3.select("#comparison").selectAll("path").remove();
 
 	var xAxis = d3.svg.axis().scale(xScale).ticks(12);
-	svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height - padding) + ")").call(xAxis);
+	svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height2 - padding) + ")").call(xAxis);
 
 	var yAxis = d3.svg.axis().scale(yScale).orient("left");
 	svg.append("g").attr("class", "axis").attr("transform", "translate(" + padding + ", 0)").call(yAxis);

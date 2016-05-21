@@ -5,11 +5,14 @@
 	<script src = "https://d3js.org/d3.v3.min.js"></script>
 	<script src = "http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 	<script src = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+	<script src= "javascript/jquery-1.12.1.min.js"></script>
 	<link href = 'https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel = 'stylesheet'/>
 	<link rel = 'stylesheet' type = "text/css" href = "css/styles.css" />
 	
 
+
 	<title>Haze in China</title>
+	
 </head>
 <body>
 	<!-- first visualization -->
@@ -17,6 +20,12 @@
 		
 		<h2 class = "center">China Air Quality Map</h2>
 		<div id = "map"></div>
+		<!-- citation -->
+		<div>Icons made by <a href="http://www.flaticon.com/authors/daniel-bruce" title="Daniel Bruce">Daniel Bruce</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		<!-- scroller Bar -->
+		<div>
+			<input type="range" id="aqiRange" min="0" max="400" value="0" step="1">
+		</div>
 
 		<div class = "center">
 			<span id = "cityName" class = "span">Click a Circle on the Map</span>
@@ -26,12 +35,16 @@
 
 	</div>
 
-	<!-- second visualization -->
+	<!-- second visualization: more information about a specific city-->
+	<div id=""></div>
+	
+	<!-- comparsion -->
 	<div id = "secondViz">
 		<h2 class = "center">Is Chinese Data Similar to US Data for Year 2015?</h2>
 		<div id = "menu" class = "center"></div>
 		<div id = "comparison" class = "center"></div>
 	</div>
+
 	<script src = "javascript/mapAndRectsCreation.js"></script>
 	<script src = "javascript/comparisonCNandUS.js"></script>
 </body>

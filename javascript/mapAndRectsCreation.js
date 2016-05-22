@@ -15,15 +15,12 @@ var monthInfo, AQIInfo, cityInfo;
 var xScale;
 var yScale;
 
-var ChinaData = new Array();
-var USData = new Array();
 
-var color = ["#dd3497", "#6a51a3"];
-
-var pollution = ["green", "yellow", "orange", "red"]
 var pollutionLevel = [50,100,150,200,300];
+//for specific city
+var cityDailyAQIObj = {};
 
-var fiveCities = ["Beijing", "Chengdu", "Guangzhou", "Shanghai", "Shenyang"];
+
 
 var svgRect = d3.select("#rectPlot");
 
@@ -35,7 +32,7 @@ var cityIcon = L.Icon.extend({
         shadowSize:   [50, 64],
         iconAnchor:   [22, 94],
         popupAnchor:  [-3, -76],
-        labelAnchor: [6, 0]
+        labelAnchor:  [6, 0]
     }
 });
 
@@ -78,62 +75,13 @@ d3.csv("data/cities.csv", function (error, data) {
 			updateMapIcon(curAQI);
 		});
 
-		//
-
+		//load the daily data 
+		
 
 
 	});
 
 });
-
-
-
-
-
-  //   AQI.forEach(function (d) {
- 	// 	map.addLayer(L.circle([d.x, d.y], 0));
- 	// });
-
- // 	var svgMap = d3.select(map.getPanes().overlayPane).append("svg")
-	// 	.attr("class", "leaflet-zoom-animated")
-	// 	.attr("width", window.innerWidth)
-	// 	.attr("height", window.innerHeight);
-
-	// var	g = svgMap.append("g").attr("class", "leaflet-zoom-hide");
-
-	// var images = g.selectAll("image")
-	// 	.data(AQI)
-	// 	.enter().append("image")
-	// 	.attr("id", function (d) {
-	// 		return d.site;
-	// 	})
-	// 	.attr("xlink:href", function (d) {
-	// 		var temp = d.quality;
-	// 		return "img/" + temp + ".svg";
-	// 	})
-	// 	.style("opacity", 0.9)
-	// 	.on("click", function () {
-	// 		console.log(this.id);
-	// 		var name = this.id;
-	// 		d3.select("#cityName").text(name);
-	// 		choice = cities.filter(function (d) {
-	// 			return d.site == name;
-	// 		});
-	// 		svgRect.select("svg").remove();
-	// 		var rectSvg = svgRect.append("svg").attr("width", width).attr("height", height);		
-	// 		rectSvg.selectAll("rect").data(choice).enter()
-	// 		.append("rect").attr("width", 30).attr("height", 30)
-	// 		.attr("x", function (d) {
-	// 			return ((d.day - 1) % 30) * 30;
-	// 		})
-	// 		.attr("y", function (d) {
-	// 			return (Math.floor((d.day - 1) / 30) + 1) * 30;
-	// 		})
-	// 		.style("fill", function (d) {
-	// 			return pollution[d.quality];
-	// 		})
-	// 		.style("stroke","black");
-	// 	});
 
 
 function updateMapIcon(lowestAQI){
@@ -154,6 +102,7 @@ function setTheMapWithIcon(aqiValue){
 			
 			marker.on("click", function () {
 				console.log(this._popup.getContent());
+				//get the data of the whole year
 			});
 			marker.addTo(map);
 		}	

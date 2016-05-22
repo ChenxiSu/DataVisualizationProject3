@@ -4,6 +4,8 @@ var monthInfo, AQIInfo, cityInfo;
 var fiveCities = ["Beijing", "Chengdu", "Guangzhou", "Shanghai", "Shenyang"];
 var color = ["#dd3497", "#6a51a3"];
 
+var padding = 30;
+
 var height2 = d3.select("#comparison")[0][0].offsetHeight;
 var width2 = d3.select("#comparison")[0][0].offsetWidth;
 console.log("height2 is: "+height2);

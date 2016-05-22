@@ -38,8 +38,27 @@ path {
     height:20px;
 }
 
+/*city info */
+#secondViz{
+    width: 50%;
+    height: 100px;
+}
 
+#donutChartSvg{
+    width: 100%;
+    height: 100%;
+}
 
+#donutChartSvg path.slice{
+    stroke-width:2px;
+}
+
+#donutChartSvg polyline{
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}
 /*style of second visualization*/
 #secondViz{
     width: 100%;

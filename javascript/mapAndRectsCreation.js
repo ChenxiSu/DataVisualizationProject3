@@ -158,8 +158,8 @@ function drawDonutChart(inputDataArray){
 	donutChartSvg.append("g")
 		.attr("class", "lines");
 
-	var width = 960,
-        height = 450,
+	var width = 900,
+        height = 400,
         radius = Math.min(width, height) / 2;
 	var pie = d3.layout.pie()
 		.sort(null)
@@ -183,7 +183,7 @@ function drawDonutChart(inputDataArray){
 	};
 
 	var color = d3.scale.ordinal()
-	.domain(["Excellent", "Good", "Light pollution", "Moderate Pollution", "Severe Pollution", "Very Severe"])
+	.domain(["Excellent", "Good", "Light pollution", "Moderate Pollution", "Severe Pollution", "Very Severe Pollution"])
 	.range(["#00FF00", "#FFFF00", "#7FF9933", "#FF0033", "#CC0000", "#660066"]);
 
 	function processData(){
@@ -262,8 +262,7 @@ function drawDonutChart(inputDataArray){
 			};
 		});
 
-	text.exit()
-		.remove();
+	text.exit().remove();
 
 	/* ------- SLICE TO TEXT POLYLINES -------*/
 
